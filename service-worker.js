@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js");
 
 importScripts(
-  "/scrum-burndown-chart/precache-manifest.77359528aee869e9daf09bc26e6bc440.js"
+  "/scrum-burndown-chart/precache-manifest.ebdec9fd22e3aae7baa31070b9042777.js"
 );
 
 self.addEventListener('message', (event) => {
