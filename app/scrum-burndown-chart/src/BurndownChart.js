@@ -85,7 +85,6 @@ class BurndownChart extends Component {
           </ResponsiveContainer>
         </div>
         <div>
-          <input value={this.state.restTaskPoint} onChange={this.handleRestTaskPointChange} />
         </div>
       </div>
     );

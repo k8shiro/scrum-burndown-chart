@@ -15,3 +15,9 @@ docker-compose run --service-ports node ash -c "cd scrum-burndown-chart; yarn st
 ```
 docker-compose run --service-ports node ash -c "cd scrum-burndown-chart; yarn add react-chartjs-2 chart.js"
 ```
+
+- githubpageで公開
+
+```
+docker-compose run --service-ports node ash -c "cd scrum-burndown-chart; yarn run gh-pages --user 'ko-he- <koheiyatsushiro@yahoo.co.jp>' --repo https://github.com/ko-he-/scrum-burndown-chart -d build"
+```
