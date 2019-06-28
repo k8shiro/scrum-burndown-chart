@@ -7,7 +7,11 @@ class BurndownChart extends Component {
     super(props);
 
     this.state = {
-      restTaskPoint: 0,
+      data: [],
+      avg: 0,
+      lastItem: NaN,
+      currentClosedPoint: NaN,
+      currentCapacity: NaN
     };
 
     this.handleRestTaskPointChange = this.handleRestTaskPointChange.bind(this);
@@ -17,56 +21,62 @@ class BurndownChart extends Component {
     this.setState({restTaskPoint: e.target.value});
   }
 
+  getScrumCapacity() {
+    const data = this.state.data;
+    const deliveryDate = new Date(process.env.REACT_APP_DELIVERY_DATE).getTime();
+    var scrumCapacity = 0;
+    if (data.length != 0 ) {
+      var lastDate = data[data.length - 1].time;
+      var sprintAvg = this.state.avg;
+
+      scrumCapacity = (deliveryDate - lastDate)  / (1000 * 60 * 60 *24 * 14) * sprintAvg;
+
+      var currentClosedPoint = data[data.length - 1].closedPoint;
+      var lastItem = {'time': deliveryDate, 'closedPoint': scrumCapacity};
+      data.push(lastItem);
+      var currentCapacity = lastItem.closedPoint - currentClosedPoint;
+    
+      this.setState({
+        data: data,
+        lastItem: lastItem,
+        currentClosedPoint: currentClosedPoint,
+        currentCapacity: currentCapacity
+      })
+    }
+  }
+
+  componentDidMount() {
+    fetch('https://us-central1-valiant-house-244503.cloudfunctions.net/ob-openpj-sprint-point')
+      .then((response) => response.json())
+      .then((responseJson) => {
+        var data = responseJson.data;
+        var avg  = responseJson.avg;
+
+        this.setState({
+          data: data,
+          avg: avg,
+        })
+        this.getScrumCapacity()   
+      })
+   }
+
   render() {
     const {
       title,
     } = this.props;
 
-    var startDate = new Date(process.env.REACT_APP_START_DATE).getTime();
-    var deliveryDate = new Date(process.env.REACT_APP_DELIVERY_DATE).getTime();
-    var today = new Date().getTime();
-
-    var sprintCapacity = 25;
-    var sprintLength = 7 * 2;
-    var totalCapacity = sprintCapacity * (deliveryDate - startDate) / (1000 * 60 * 60 *24) / sprintLength;
-    var restCapacity = sprintCapacity * (deliveryDate - today) / (1000 * 60 * 60 *24) / sprintLength;
-
-    const capacityData = [
-      {time: startDate, capacityValue: totalCapacity},
-      {time: today, capacityValue: restCapacity},
-      {time: deliveryDate, capacityValue: 0}
-    ]
-
-    const restTaskPointData = [
-      {time: today, restValue: this.state.restTaskPoint},
-      {time: deliveryDate, restValue: 0}
-    ]
-
-    const data = capacityData.concat(restTaskPointData)
-  
-    const options = {
-      options: {
-        responsive: true,
-        showLine: true,
-      }
-    } 
-
-    console.log(data)  
-
+    console.log(this.state.data)
     return (
       <div className="BurndownChart">
         <div>
-          {title}
-          {startDate.toString()}
-          {deliveryDate.toString()}
-          {today.toString()}<br/>
-          {totalCapacity}<br/>
-          {restCapacity}<br/>
-          {this.state.restTaskPoint}
+          現在までにCloseしたStoryPoint {this.state.currentClosedPoint} <br/>
+          最終的にCloseできるStoryPointの予測 {this.state.lastItem.closedPoint} <br/>
+          直近のSprintの平均Capacity {this.state.avg} <br/>
+          現在のCapacity {this.state.currentCapacity} <br/>
         </div>
         <div>
           <ResponsiveContainer width={'100%'} height={300}>
-            <ComposedChart  data={data}>
+            <ComposedChart  data={this.state.data.slice()}>
               <XAxis
                 dataKey="time"
                 type='number'
@@ -74,13 +84,11 @@ class BurndownChart extends Component {
                 tickFormatter={(unixTime) => moment(unixTime).format('YYYY/MM/DD')}
               />
               <YAxis 
-                //dataKey="value"
                 type='number'
                 domain={['auto', 'auto']}
               />
               <Tooltip labelFormatter={(unixTime) => moment(unixTime).format('YYYY/MM/DD')} />
-              <Scatter line dataKey="capacityValue" fill="#8884d8" />
-              <Scatter line dataKey="restValue" fill="#555555" />
+              <Scatter line dataKey="closedPoint" fill="#5a5a5a" />
             </ComposedChart>
           </ResponsiveContainer>
         </div>
