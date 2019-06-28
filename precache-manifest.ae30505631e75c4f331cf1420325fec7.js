@@ -1,19 +1,19 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "c057242aa577d2425a8dd50ebbcd8429",
+    "revision": "d3821464341dcb028bfa515caad0620f",
     "url": "/scrum-burndown-chart/index.html"
   },
   {
-    "revision": "dbd78b4cd8192050cdaf",
+    "revision": "17e4bca296ecc782cf53",
     "url": "/scrum-burndown-chart/static/css/main.2cce8147.chunk.css"
   },
   {
-    "revision": "fb41e0a320f1c680e072",
-    "url": "/scrum-burndown-chart/static/js/2.ac2f4746.chunk.js"
+    "revision": "1c60a328445c6ea24f16",
+    "url": "/scrum-burndown-chart/static/js/2.bbf937fd.chunk.js"
   },
   {
-    "revision": "dbd78b4cd8192050cdaf",
-    "url": "/scrum-burndown-chart/static/js/main.b0f37def.chunk.js"
+    "revision": "17e4bca296ecc782cf53",
+    "url": "/scrum-burndown-chart/static/js/main.60394926.chunk.js"
   },
   {
     "revision": "5346f0ff2974eff92b2f",
